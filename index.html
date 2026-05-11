@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>gustavvasas-pluggsida V2</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&family=Raleway:wght@300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #ffffff;
+      font-family: 'Raleway', sans-serif;
+      min-height: 100vh;
+      padding: 0 0 60px 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 48px 48px 32px 48px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-text { flex: 1; }
+
+    h1 {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .description {
+      margin-top: 10px;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 0.88rem;
+      color: #999;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .search-wrap input {
+      width: 220px;
+      padding: 9px 16px;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: #333;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-wrap input:focus { border-color: #aaa; background: #fff; }
+    .search-wrap input::placeholder { color: #bbb; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: #efefef;
+      margin: 0 48px 40px 48px;
+    }
+
+    /* ── GAME GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 32px 28px;
+      padding: 0 48px;
+    }
+
+    .game-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .game-card:hover .thumb { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.10); }
+
+    .thumb {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #f0f0f0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: block;
+    }
+
+    /* placeholder if no image */
+    .thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 10px;
+      background: #f3f3f3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .thumb-placeholder span {
+      font-size: 2.4rem;
+      opacity: 0.25;
+    }
+
+    .game-card:hover .thumb-placeholder { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.10); }
+
+    .game-title {
+      margin-top: 10px;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 0.82rem;
+      color: #999;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 0.9rem;
+      color: #ccc;
+      padding: 60px 0;
+    }
+
+    @media (max-width: 600px) {
+      header { flex-direction: column; padding: 32px 24px 24px; }
+      .search-wrap input { width: 100%; }
+      .grid { padding: 0 24px; gap: 24px 20px; }
+      .divider { margin: 0 24px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-text">
+      <h1>gustavvasas-pluggsida V2</h1>
+      <p class="description">Om problem upstår kontakta: max.nydahl@edu.lomma.se</p>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Sök spel..." />
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <div class="grid" id="gameGrid"></div>
+
+  <script>
+    // ============================================================
+    //  LÄGG TILL SPEL HÄR
+    //  Kopiera ett objekt och fyll i:
+    //    title : namnet som visas under bilden
+    //    url   : länken dit spelet går när man klickar
+    //    image : sökväg/URL till bilden (lämna "" för platshållare)
+    // ============================================================
+    const GAMES = [
+      {
+        title: "Exempelspel 1",
+        url:   "https://example.com",
+        image: ""   // sätt en bild-URL eller relativ sökväg, t.ex. "images/spel1.png"
+      },
+      {
+        title: "Exempelspel 2",
+        url:   "https://example.com",
+        image: ""
+      },
+      {
+        title: "Exempelspel 3",
+        url:   "https://example.com",
+        image: ""
+      },
+    ];
+    // ============================================================
+
+    const grid        = document.getElementById('gameGrid');
+    const searchInput = document.getElementById('searchInput');
+
+    function renderGames(filter) {
+      const q = (filter || '').toLowerCase();
+      const filtered = GAMES.filter(g => g.title.toLowerCase().includes(q));
+      grid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p class="no-results">Inga spel hittades.</p>';
+        return;
+      }
+
+      filtered.forEach(game => {
+        const a = document.createElement('a');
+        a.className   = 'game-card';
+        a.href        = game.url;
+        a.target      = '_blank';
+        a.rel         = 'noopener noreferrer';
+
+        let media;
+        if (game.image) {
+          media = document.createElement('img');
+          media.className = 'thumb';
+          media.src       = game.image;
+          media.alt       = game.title;
+        } else {
+          media = document.createElement('div');
+          media.className = 'thumb-placeholder';
+          media.innerHTML = '<span>🎮</span>';
+        }
+
+        const label = document.createElement('p');
+        label.className   = 'game-title';
+        label.textContent = game.title;
+
+        a.appendChild(media);
+        a.appendChild(label);
+        grid.appendChild(a);
+      });
+    }
+
+    searchInput.addEventListener('input', () => renderGames(searchInput.value));
+    renderGames();
+  </script>
+</body>
+</html>
